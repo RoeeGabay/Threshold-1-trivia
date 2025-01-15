@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Threshold-1 Space Station Trivia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            background: linear-gradient(to bottom, #000033, #111133);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 850px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #6666ff;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 255, 0.5);
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        /* Star background effect */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+
+        /* Header Section */
+        .score {
+            font-size: 1.4em;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Question and options */
+        .question {
+            font-size: 1.5em;
+            color: #33ccff;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #33ccff;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .option {
+            background: rgba(102, 102, 255, 0.5);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .option:hover {
+            background: rgba(102, 102, 255, 0.7);
+            transform: scale(1.05);
+        }
+
+        /* Power-ups */
+        .powers {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .power {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(102, 102, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .power:hover {
+            transform: scale(1.1);
+            background: rgba(102, 102, 255, 0.9);
+        }
+
+        .power.used {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .end-message {
+            font-size: 25px; 
+            color: #77b7ff;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        /* Feedback */
+        .feedback {
+            font-size: 25px;
+            text-align: center;
+            margin-top: 20px;
+            min-height: 40px;
+        }
+
+        /* Restart button */
+        .restart {
+            background: #6666ff;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+
+        .restart:hover {
+            background: #8080ff;
+            transform: scale(1.05);
+        }
+
+        /* Hint Box */
+        .hint {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.3em;
+            color: #333;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            display: none;
+        }
+
+        /* Intro Animation */
+        .intro-animation {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Audiowide', sans-serif;
+            font-size: 3em;
+            color: #ffffff;
+            text-align: center;
+            animation: fadeOut 4s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; display: none; }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Sounds -->
+    <audio id="correct-sound" src="correct-answer.mp3" preload="auto"></audio>
+    <audio id="wrong-sound" src="wrong-answer.mp3" preload="auto"></audio>
+
+    
+    <div class="stars"></div>
+    <div class="game-container">
+        <div class="score">Score: <span id="score">0</span>/10</div>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <div class="powers">
+            <div class="power" id="fifty" title="50/50">50/50</div>
+            <div class="power" id="lifeline" title="Second Chance">❤️</div>
+            <div class="power" id="skip" title="Skip">⏭️</div>
+            <div class="power" id="hint" title="Hint">💡</div>
+        </div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+    
+    <div class="hint" id="hintBox"></div>
+
+    <div class="intro-animation" id="introText">Save The Spaceship From Exploding By Answering 7/10 Questions Correct!</div>
+
+    <script>
+        const questions = [
+            {question: "How many models are there in the Threshold-1 station?", options: ["51", "52", "50", "40"], correct: 1, hint: "The station has an even number of modules"},
+            {question: "How many residential, service and secondary modules are there in the station?", options: ["19, 21, 17", "27, 25, 2", "225, 13, 9", "17, 25, 10"], correct: 3, hint: "The numbers are all under 29"},
+            {question: "Is there a medicine module in space stations that exist today?", options: ["In the part that is no longer active today", "Yes", "No", "The International Space Station has a medical module"], correct: 2, hint: "The Threshold-1 space station has innovative technology regarding a medicine module"},
+            {question: "Is there space tourism at the Threshold-1 station?", options: ["Space tourism will not exist on the space station", "There is space tourism on the space station", "Space tourism is not such a good idea, so it's not gonna be on the space station", "Space tourism is not a logical idea"], correct: 1, hint: "There are tourism modules in the space station"},
+            {question: "At what location in space is the Threshold-1 space station located?", options: ["Where the International Space Station is", "outside the earth's magnetic field", "Between Van Halen belts", "After the Van Halen belts"], correct: 2, hint: "11,500 km above sea level is the Threshold-1 station"},
+            {question: "How many spaceship berths are there at the Threshold-1 space station?", options: ["5", "7", "0", "3"], correct: 3, hint: "between 0 and 5"},
+            {question: "How many people are gonna be on the space station at the same time?", options: ["45-55", "20-25", "10-15", "6-10"], correct: 0, hint: "There is a large staff on the space station"},
+            {question: "How does the space station avoid a meteorite approaching it?", options: ["with the help of huge engines", "with the help of gyroscopes", "with the help of an ion engine", "with the help of a sail"], correct: 1, hint: "There is no wind in space"},
+            {question: "What are the walls in the space station made of?", options: ["Only iron", "4 layers of compressed polymer, water, white iron, cooling system, waffle protector", "A thick titanium layer and a waffle shield with running water for radiation protection", "6 layers of compressed polymer, water, cooling system, waffle shield, metal, external pressure body, thermal insulation layer"], correct: 3, hint: "Not made of too thick a layer"},
+            {question: "Would we have gravity in the healer module?", options: ["Gravity with a force of 0.5G", "No", "Gravity is stronger than Earth's gravity", "Earth's gravitational force"], correct: 0, hint: "It's double the minimum required area"},
+            {question: "At the Threshold-1 station which modules do we want to be oxidized?", options: ["Only the manned modules will be oxidized", "Only the residential modules will not be oxidized", "Only the modules that work in them", "The whole station will be oxygenated"], correct: 0, hint: "Not every station will be oxidized"},
+            {question: "Will the Threshold-1 space station have space sickness recovery rooms?", options: ["Of course there are two recovery rooms", "There are no recovery rooms", "Each residential module will have a recovery room", "There is one recovery module"], correct: 0, hint: "There is more than one recovery model"},
+            {question: "How many gyroscopes are there on the Threshold-1 station?", options: ["5 working gyroscopes 10 spar gyroscopes", "35 gyroscopes work without spar gyroscopes", "No gyroscopes", "20 spar gyroscopes without gyroscopes in use"], correct: 0, hint: "There are gyroscopes in use and gyroscopes spar"},
+            {question: "What is the technological innovation in the Threshold-1 space station?", options: ["The shape of the station wall", "Space tourism", "service module", "Sports modules"], correct: 1, hint: "Our innovation is not a module"},
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let usedPowers = {fifty: false, lifeline: false, skip: false, hint: false};
+        let secondChanceAvailable = false;
+
+        // Create stars
+        const starsContainer = document.querySelector('.stars');
+        for (let i = 0; i < 200; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 1 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function displayQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question').textContent = q.question;
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';  // Clear previous options
+
+            q.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option;
+                button.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (secondChanceAvailable) {
+                if (selectedIndex === questions[currentQuestion].correct) {
+                    handleCorrectAnswer();
+                } else {
+                    const selectedOption = document.querySelectorAll('.option')[selectedIndex];
+                    selectedOption.style.display = 'none';
+                    secondChanceAvailable = false;
+                }
+                return;
+            }
+
+            if (selectedIndex === questions[currentQuestion].correct) {
+                handleCorrectAnswer();
+            } else {
+                handleWrongAnswer();
+            }
+        }
+
+        function handleCorrectAnswer() {
+            score++;
+            document.getElementById('score').textContent = score;
+            document.getElementById('feedback').textContent = '✓ Correct!';
+            const correctSound = document.getElementById('correct-sound');
+            correctSound.play();  // הפעלת הסאונד
+            setTimeout(nextQuestion, 1000);
+        }
+
+        function handleWrongAnswer() {
+            document.getElementById('feedback').textContent = '✗ Wrong!';
+            const wrongSound = document.getElementById('wrong-sound');
+            wrongSound.play();  // הפעלת הסאונד
+            setTimeout(nextQuestion, 1000);
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+                document.getElementById('feedback').textContent = '';
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            const container = document.querySelector('.game-container');
+            const message = score >= 7 ? 'Congratulations! You saved the space station!' : 'The space station exploded! Try again!';
+            container.innerHTML = ` 
+                <div class="end-message">${message}</div>
+                    <div class="score">Final Score: ${score}/10</div>
+                    
+                `;
+        }
+
+        function startGame() {
+            // Reset the game state
+            currentQuestion = 0;
+            score = 0;
+            usedPowers = {fifty: false, lifeline: false, skip: false, hint: false};
+            secondChanceAvailable = false;
+
+            // Shuffle the questions array
+            shuffleArray(questions);
+
+            // Select the first 10 questions
+            const selectedQuestions = questions.slice(0, 10); // Get the first 10 questions
+            questions.length = 0;  // Clear the existing questions array
+            questions.push(...selectedQuestions);  // Push the first 10 questions back into the array
+
+            // Hide the intro and show the game container
+            document.getElementById('introText').style.display = 'none';
+            document.querySelector('.game-container').style.display = 'block';
+
+            // Clear previous game container and show question
+            displayQuestion();
+            resetPowers();
+        }
+
+        function resetPowers() {
+            document.getElementById('fifty').onclick = fiftyFifty;
+            document.getElementById('lifeline').onclick = lifeline;
+            document.getElementById('skip').onclick = skipQuestion;
+            document.getElementById('hint').onclick = showHint;
+        }
+
+        function fiftyFifty() {
+            if (usedPowers.fifty) return;
+            usedPowers.fifty = true;
+            document.getElementById('fifty').classList.add('used');
+            const q = questions[currentQuestion];
+            const correctOption = q.correct;
+            const wrongOptions = [0, 1, 2, 3].filter(i => i !== correctOption);
+            shuffleArray(wrongOptions);
+            wrongOptions.slice(0, 2).forEach(optionIndex => {
+                document.querySelectorAll('.option')[optionIndex].style.display = 'none';
+            });
+        }
+
+        function lifeline() {
+            if (usedPowers.lifeline) return;
+            usedPowers.lifeline = true;
+            document.getElementById('lifeline').classList.add('used');
+            secondChanceAvailable = true;
+            document.getElementById('feedback').textContent = 'You have a second chance for this question!';
+        }
+
+        function skipQuestion() {
+            if (usedPowers.skip) return;
+            usedPowers.skip = true;
+            document.getElementById('skip').classList.add('used');
+            nextQuestion();
+        }
+
+        function showHint() {
+            if (usedPowers.hint) return;
+            usedPowers.hint = true;
+            document.getElementById('hint').classList.add('used');
+            const hintBox = document.getElementById('hintBox');
+            hintBox.style.display = 'block';
+            hintBox.textContent = questions[currentQuestion].hint;
+            setTimeout(() => {
+                hintBox.style.display = 'none';
+            }, 3000);
+        }
+
+        window.onload = () => {
+            setTimeout(startGame, 4000); // Start game after 4 seconds delay to let the intro animation play
+
+        };
+    </script>
+</body>
+</html>
