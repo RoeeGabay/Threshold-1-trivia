@@ -204,7 +204,6 @@
     <!-- Sounds -->
     <audio id="correct-sound" src="correct-answer.mp3" preload="auto"></audio>
     <audio id="wrong-sound" src="wrong-answer.mp3" preload="auto"></audio>
-
     
     <div class="stars"></div>
     <div class="game-container">
@@ -244,6 +243,7 @@
 
         let currentQuestion = 0;
         let score = 0;
+        let flag = 0;
         let usedPowers = {fifty: false, lifeline: false, skip: false, hint: false};
         let secondChanceAvailable = false;
 
@@ -307,14 +307,14 @@
             document.getElementById('feedback').textContent = '✓ Correct!';
             const correctSound = document.getElementById('correct-sound');
             correctSound.play();  // הפעלת הסאונד
-            setTimeout(nextQuestion, 1000);
+            setTimeout(nextQuestion, 500);
         }
 
         function handleWrongAnswer() {
             document.getElementById('feedback').textContent = '✗ Wrong!';
             const wrongSound = document.getElementById('wrong-sound');
             wrongSound.play();  // הפעלת הסאונד
-            setTimeout(nextQuestion, 1000);
+            setTimeout(nextQuestion, 500);
         }
 
         function nextQuestion() {
@@ -331,14 +331,28 @@
             const container = document.querySelector('.game-container');
             const message = score >= 7 ? 'Congratulations! You saved the space station!' : 'The space station exploded! Try again!';
             container.innerHTML = ` 
-                <div class="end-message">${message}</div>
-                    <div class="score">Final Score: ${score}/10</div>
-                    
+                    <div class="end-message">${message}</div>
+                        <div class="score">Final Score: ${score}/10</div> 
+                        <button class="restart" onclick="startGame()">Play Again</button>
+                        <div class="question" id="question"></div>
                 `;
         }
 
         function startGame() {
             // Reset the game state
+            const container = document.querySelector('.game-container');
+            container.innerHTML =`<div class="score">Score: <span id="score">0</span>/10</div>\
+                    <div class="question" id="question"></div>
+                    <div class="options" id="options"></div>
+                    <div class="powers">
+                        <div class="power" id="fifty" title="50/50">50/50</div>
+                        <div class="power" id="lifeline" title="Second Chance">❤️</div>
+                        <div class="power" id="skip" title="Skip">⏭️</div>
+                        <div class="power" id="hint" title="Hint">💡</div>
+                    </div>
+                        <div class="feedback" id="feedback"></div>
+                `
+            
             currentQuestion = 0;
             score = 0;
             usedPowers = {fifty: false, lifeline: false, skip: false, hint: false};
@@ -410,8 +424,8 @@
 
         window.onload = () => {
             setTimeout(startGame, 4000); // Start game after 4 seconds delay to let the intro animation play
-
         };
+
     </script>
 </body>
 </html>
