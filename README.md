@@ -1,2 +1,2 @@
 # Threshold-1-trivia
-a trivia about Threshold-1
+Your mission is to save the space station by answering at least 7 out of 10 questions correct

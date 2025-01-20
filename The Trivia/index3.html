@@ -221,24 +221,26 @@
     
     <div class="hint" id="hintBox"></div>
 
-    <div class="intro-animation" id="introText">Save The Spaceship From Exploding By Answering 7/10 Questions Correct!</div>
+    <div class="intro-animation" id="introText">
+        Your Mission:
+        Save The Spaceship From Exploding By Answering at least 7 out of 10 Questions Correctly
+    </div>
 
     <script>
         const questions = [
-            {question: "How many models are there in the Threshold-1 station?", options: ["51", "52", "50", "40"], correct: 1, hint: "The station has an even number of modules"},
-            {question: "How many residential, service and secondary modules are there in the station?", options: ["19, 21, 17", "27, 25, 2", "225, 13, 9", "17, 25, 10"], correct: 3, hint: "The numbers are all under 29"},
+            {question: "How many modules are there in the Threshold-1 station?", options: ["51", "52", "50", "40"], correct: 1, hint: "The station has an even number of modules"},
+            {question: "How many residential, service and secondary modules are there in the station, respectivly?", options: ["19, 21, 17", "27, 25, 2", "225, 13, 9", "17, 25, 10"], correct: 3, hint: "The numbers are all under 29"},
             {question: "Is there a medicine module in space stations that exist today?", options: ["In the part that is no longer active today", "Yes", "No", "The International Space Station has a medical module"], correct: 2, hint: "The Threshold-1 space station has innovative technology regarding a medicine module"},
-            {question: "Is there space tourism at the Threshold-1 station?", options: ["Space tourism will not exist on the space station", "There is space tourism on the space station", "Space tourism is not such a good idea, so it's not gonna be on the space station", "Space tourism is not a logical idea"], correct: 1, hint: "There are tourism modules in the space station"},
-            {question: "At what location in space is the Threshold-1 space station located?", options: ["Where the International Space Station is", "outside the earth's magnetic field", "Between Van Halen belts", "After the Van Halen belts"], correct: 2, hint: "11,500 km above sea level is the Threshold-1 station"},
-            {question: "How many spaceship berths are there at the Threshold-1 space station?", options: ["5", "7", "0", "3"], correct: 3, hint: "between 0 and 5"},
-            {question: "How many people are gonna be on the space station at the same time?", options: ["45-55", "20-25", "10-15", "6-10"], correct: 0, hint: "There is a large staff on the space station"},
+            {question: "At what location in space is the Threshold-1 space station located?", options: ["Where the International Space Station is", "outside the earth's magnetic field", "Between Van Alen belts", "After the Van Halen belts"], correct: 2, hint: "11,500 km above sea level is the Threshold-1 station"},
+            {question: "How many docking station are there at the Threshold-1 space station?", options: ["5", "7", "0", "3"], correct: 3, hint: "between 0 and 5"},
+            {question: "How many people are going to be on the space station at the same time?", options: ["45-55", "20-25", "10-15", "6-10"], correct: 0, hint: "There is a large staff on the space station"},
             {question: "How does the space station avoid a meteorite approaching it?", options: ["with the help of huge engines", "with the help of gyroscopes", "with the help of an ion engine", "with the help of a sail"], correct: 1, hint: "There is no wind in space"},
             {question: "What are the walls in the space station made of?", options: ["Only iron", "4 layers of compressed polymer, water, white iron, cooling system, waffle protector", "A thick titanium layer and a waffle shield with running water for radiation protection", "6 layers of compressed polymer, water, cooling system, waffle shield, metal, external pressure body, thermal insulation layer"], correct: 3, hint: "Not made of too thick a layer"},
-            {question: "Would we have gravity in the healer module?", options: ["Gravity with a force of 0.5G", "No", "Gravity is stronger than Earth's gravity", "Earth's gravitational force"], correct: 0, hint: "It's double the minimum required area"},
-            {question: "At the Threshold-1 station which modules do we want to be oxidized?", options: ["Only the manned modules will be oxidized", "Only the residential modules will not be oxidized", "Only the modules that work in them", "The whole station will be oxygenated"], correct: 0, hint: "Not every station will be oxidized"},
+            {question: "Would we have gravity in the medicine module?", options: ["Gravity with a force of 0.5G", "No", "Gravity is stronger than Earth's gravity", "Earth's gravitational force"], correct: 0, hint: "It's double the minimum required area"},
+            {question: "At the Threshold-1 station which modules are oxidized?", options: ["Only the manned modules will be oxidized", "Only the residential modules will not be oxidized", "Only the modules that work in them", "The whole station will be oxygenated"], correct: 0, hint: "Not every station will be oxidized"},
             {question: "Will the Threshold-1 space station have space sickness recovery rooms?", options: ["Of course there are two recovery rooms", "There are no recovery rooms", "Each residential module will have a recovery room", "There is one recovery module"], correct: 0, hint: "There is more than one recovery model"},
             {question: "How many gyroscopes are there on the Threshold-1 station?", options: ["5 working gyroscopes 10 spar gyroscopes", "35 gyroscopes work without spar gyroscopes", "No gyroscopes", "20 spar gyroscopes without gyroscopes in use"], correct: 0, hint: "There are gyroscopes in use and gyroscopes spar"},
-            {question: "What is the technological innovation in the Threshold-1 space station?", options: ["The shape of the station wall", "Space tourism", "service module", "Sports modules"], correct: 1, hint: "Our innovation is not a module"},
+            {question: "Which of these are the technological innovations in the Threshold-1 space station?", options: ["The shape of the station wall", "Space tourism", "service module", "Sports modules"], correct: 1, hint: "Our innovation is not a module"},
         ];
 
         let currentQuestion = 0;
@@ -423,7 +425,7 @@
         }
 
         window.onload = () => {
-            setTimeout(startGame, 4000); // Start game after 4 seconds delay to let the intro animation play
+            setTimeout(startGame, 7000); // Start game after 7 seconds delay to let the intro animation play
         };
 
     </script>
